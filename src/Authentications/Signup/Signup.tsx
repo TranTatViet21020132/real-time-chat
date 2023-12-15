@@ -26,7 +26,7 @@ export default function CountrySelect() {
   useEffect(() => {
     const postData = async (provider: string) => {
       try {
-        let res = await axiosClient.post(`http://127.0.0.1:8000/api/user/auth/${provider}/callback/`, { 
+        let res = await axiosClient.post(`api/user/auth/${provider}/callback/`, { 
           'url': decodeURIComponent(window.location.href)
         })
 
@@ -176,12 +176,12 @@ export default function CountrySelect() {
   };
 
   const signupWithGoogle = async () => {
-    let res: string = await axiosClient.get('http://127.0.0.1:8000/api/user/auth/google/')
+    let res: string = await axiosClient.get('/api/user/auth/google/')
     window.location.replace(res)
   }
 
   const signupWithFacebook = async () => {
-    let res: string = await axiosClient.get('http://127.0.0.1:8000/api/user/auth/facebook/')
+    let res: string = await axiosClient.get('/api/user/auth/facebook/')
     window.location.replace(res)
   }
 
