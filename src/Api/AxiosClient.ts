@@ -3,7 +3,7 @@ import axios from 'axios';
 // Please have a look at here `https://github.com/axios/axios#request` for the full list of configs
 
 const axiosClient = axios.create({
-    baseURL: 'http://112.137.129.158:5002/',
+    baseURL: 'http://fall2324w3g6.int3306.freeddns.org/',
 });
 axiosClient.interceptors.request.use(async (config) => {
     const token = await localStorage.getItem('accessToken');

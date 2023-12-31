@@ -39,7 +39,7 @@ const MediumPage = () => {
       });
 
       setTimeout(async () => {
-        const response = await axios.post('http://112.137.129.158:5002/api/user/verify-user/', formData);
+        const response = await axios.post('http://fall2324w3g6.int3306.freeddns.org/api/user/verify-user/', formData);
         console.log(response.data);
         navigate('/signin');
       }, 2000);

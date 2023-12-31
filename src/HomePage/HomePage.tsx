@@ -32,7 +32,7 @@ if (_token) {
   var userId = (jwtDecode(token) as any).user_id;
 }
 
-const socket = new WebSocket(`ws://112.137.129.158:5002/ws/chat/?token=${token}`);
+const socket = new WebSocket(`ws://fall2324w3g6.int3306.freeddns.org/ws/chat/?token=${token}`);
 
 function HomePage() {
   const [channelUpdate, setChannelUpdate] = useState<boolean>(false);
