@@ -554,9 +554,6 @@ p {
   color: white;
 }
 
-.message-container .icon-container {
-}
-
 .message.user.image .message-icons {
   position: absolute;
   top: -10px;
@@ -578,7 +575,7 @@ p {
   color: white;
 }
 
-.icon-container {
+.message-container .icon-container {
   left: 85px;
   top: -30px;
   position: relative;
