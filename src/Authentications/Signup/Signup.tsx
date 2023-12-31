@@ -1,11 +1,15 @@
 import { BsTelegram } from 'react-icons/bs'
-import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-import axios from 'axios';
+import { FcGoogle } from "react-icons/fc";
+import { FaFacebook } from "react-icons/fa";
+import { Link, redirect, useNavigate, useSearchParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import axios, { AxiosError } from 'axios';
+import axiosClient from "../../Api/AxiosClient";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import "./Signup.css";
+import './Signup.css';
+import { url } from 'inspector';
 
 type UserSignupProp = {
   first_name: string;
@@ -18,6 +22,57 @@ type UserSignupProp = {
 
 export default function CountrySelect() {
   const navigate = useNavigate();
+  const [params, setParams] = useSearchParams();
+
+  useEffect(() => {
+    const postData = async (provider: string) => {
+      try {
+        let res = await axiosClient.post(`api/user/auth/${provider}/callback/`, { 
+          'url': decodeURIComponent(window.location.href)
+        })
+
+        localStorage.setItem('user', JSON.stringify(data));
+        localStorage.setItem('accessToken', JSON.stringify(res?.data?.access));
+
+        toast.dismiss();
+        setTimeout(() => {
+        toast.success('Signup successful. Redirecting...', {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: 2500,
+          hideProgressBar: true,
+          pauseOnHover: true,
+          closeOnClick: false,
+          theme: "dark",
+        })}, 500);
+
+        setTimeout(() => {
+          navigate('/');
+        }, 1500);
+      } catch (error: any) {
+        let errorMessage = 'Something went wrong??'
+        if (error.response.status === 403) {
+          errorMessage = `Error occur when authenticate your ${provider} account`
+        } else if (error.response.status === 400) {
+          errorMessage = error.response.data.message
+        }
+        toast.dismiss();
+        toast.error(errorMessage , {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: 2500,
+          hideProgressBar: true,
+          pauseOnHover: true,
+          closeOnClick: false,
+          theme: "dark",
+        });
+      }
+    }
+    if (params.get('scope')) {
+      postData('google')
+    } else if (params.get('code')) {
+      postData('facebook')
+    }
+  }, [params])
+
 
   const [data, setData] = useState<UserSignupProp>({
     first_name: "",
@@ -125,6 +180,16 @@ export default function CountrySelect() {
     }
   };
 
+  const signupWithGoogle = async () => {
+    let res: string = await axiosClient.get('/api/user/auth/google/')
+    window.location.replace(res)
+  }
+
+  const signupWithFacebook = async () => {
+    let res: string = await axiosClient.get('/api/user/auth/facebook/')
+    window.location.replace(res)
+  }
+
   return (
     <section className="signup-form-container">
       <ToastContainer />
@@ -207,10 +272,13 @@ export default function CountrySelect() {
           Submit
         </button>
       </form>
+      
+      <span>Already have an account? <Link to="/signin">Signin</Link></span>
 
-      <span>
-        Already have an account? <Link to="/signin">Signin</Link>
-      </span>
+      <span className='oauth2'>
+        <FcGoogle size={50} style={{color: "var(--icon-color-active)"}} onClick={signupWithGoogle}/>
+        <FaFacebook size={50} style={{color: "var(--icon-color-active)"}} onClick={signupWithFacebook}/>
+      </span>      
     </section>
   );
 }

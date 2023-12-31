@@ -92,3 +92,9 @@
   box-shadow: none;
   border: 2px solid var(--border-on-click);
 }
+
+.oauth2 {
+  width: 15%;
+  display: flex;
+  justify-content: space-around;
+}
