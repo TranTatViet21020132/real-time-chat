@@ -1,11 +1,10 @@
 import { ReactComponent as Logo } from "../pattern.svg";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { FaCheckCircle, FaRegCheckCircle } from "react-icons/fa";
+import { FaRegCheckCircle } from "react-icons/fa";
 import { FiFlag } from "react-icons/fi";
 import { IoNotificationsOffOutline } from "react-icons/io5";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import { PiShareFat } from "react-icons/pi";
-import { BiLockAlt } from "react-icons/bi";
 import { FiTrash } from "react-icons/fi";
 import { BiSend } from "react-icons/bi";
 import { ImAttachment } from "react-icons/im";
@@ -25,7 +24,6 @@ import UserInformation from "../RightColumn/RightColumn";
 import EditAvatarChannel from "../RightColumn/ChatWithGroup/Edit/EditAvatar/EditAvatarChannel";
 import axios from "axios";
 
-import { timeEnd } from "console";
 import ChannelApi from "../Api/ChannelApi";
 
 // use api
@@ -192,7 +190,7 @@ const UserInbox: React.FC<ChannelInboxProps> = ({ channel, userId, socket, onNew
         let res: any = await axiosClient.get(
           `api/channel/${channelId}/messages/?page=1`
         );
-    let reactionListRes = await  axios.get(`http://112.137.129.158:5002/api/message/channel-reactions/${channel.id}/`)
+    let reactionListRes = await  axios.get(`http://16.162.46.190/api/message/channel-reactions/${channel.id}/`)
 
         let messageList = [];
         for (let message of res.data) {
@@ -435,12 +433,11 @@ const UserInbox: React.FC<ChannelInboxProps> = ({ channel, userId, socket, onNew
         uuid: uuidv4(),
         data: {
           content: inputValue,
-          // "reply": null
+          reply: null,
         },
       };
 
       if (isReplying) {
-        // @ts-ignore
         messageObject.data.reply = replyToMessage.id
       }
 
@@ -466,16 +463,28 @@ const UserInbox: React.FC<ChannelInboxProps> = ({ channel, userId, socket, onNew
         }
       }
 
-      let textMessage = {
-        text: inputValue,
-        sender: 'self',
-        type: 'text',
-        uuid: messageObject.uuid,
-        isSent: false,
-        // @ts-ignore
-        reply: replyToMessage.id,
-        create_at: getCurrentTime(),
+      let textMessage;
+      if (isReplying) {
+        textMessage = {
+          text: inputValue,
+          sender: 'self',
+          type: 'text',
+          uuid: messageObject.uuid,
+          isSent: false,
+          reply: replyToMessage.id,
+          create_at: getCurrentTime(),
+        }
+      } else {
+        textMessage = {
+          text: inputValue,
+          sender: 'self',
+          type: 'text',
+          uuid: messageObject.uuid,
+          isSent: false,
+          create_at: getCurrentTime(),
+        }
       }
+     
       setMessages([...messages, textMessage])
       setInputValue("");
     } else if (selectedFile) {
